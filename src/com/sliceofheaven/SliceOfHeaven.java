@@ -4,6 +4,7 @@ import com.sliceofheaven.models.*;
 import com.sliceofheaven.payment.*;
 import com.sliceofheaven.states.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SliceOfHeaven {
     private static Scanner scanner = new Scanner(System.in);
@@ -332,31 +333,42 @@ public class SliceOfHeaven {
     }
 
     private static void displayCustomers() {
-    Map<String, Customer> customers = admin.getCustomers();
-    
-    if (customers.isEmpty()) {
-        System.out.println("\nNo customers registered yet!");
-        return;
-    }
-
-    System.out.println("\n=== Customer List ===");
-    // Print table header
-    System.out.println("+" + "-".repeat(20) + "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(10) + "+");
-    System.out.printf("| %-18s | %-13s | %-23s | %-8s |\n", "Name", "Mobile", "Email", "Points");
-    System.out.println("+" + "-".repeat(20) + "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(10) + "+");
-
-    // Print each customer's details
-    for (Map.Entry<String, Customer> entry : customers.entrySet()) {
-        Customer customer = entry.getValue();
-        System.out.printf("| %-18s | %-13s | %-23s | %-8d |\n",
-            customer.getName(),
-            entry.getKey(),
-            customer.getEmail(),
-            customer.getLoyaltyPoints()
-        );
-    }
-    
-    // Print table footer
-        System.out.println("+" + "-".repeat(20) + "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(10) + "+");
+        Map<String, Customer> customers = admin.getCustomers();
+        
+        if (customers.isEmpty()) {
+            System.out.println("\nNo customers registered yet!");
+            return;
+        }
+        System.out.println("\n=== Customer List ===");
+        // Print table header
+        System.out.println("+" + "-".repeat(20) + "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(10) + "+" + "-".repeat(30) + "+");
+        System.out.printf("| %-18s | %-13s | %-23s | %-8s | %-28s |\n", 
+            "Name", "Mobile", "Email", "Points", "Favorite Pizzas");
+        System.out.println("+" + "-".repeat(20) + "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(10) + "+" + "-".repeat(30) + "+");
+        
+        // Print each customer's details
+        for (Map.Entry<String, Customer> entry : customers.entrySet()) {
+            Customer customer = entry.getValue();
+            
+            List<Pizza> savedPizzas = customer.getSavedPizzas();
+            String favoritePizzas = savedPizzas.isEmpty() ? "None" : 
+                savedPizzas.stream()
+                          .map(Pizza::getSpecialName)
+                          .limit(2)
+                          .filter(name -> name != null && !name.isEmpty())
+                          .collect(Collectors.joining(", ")) + 
+                (savedPizzas.size() > 2 ? ", ..." : "");
+            
+            System.out.printf("| %-18s | %-13s | %-23s | %-8d | %-28s |\n",
+                customer.getName(),
+                entry.getKey(),
+                customer.getEmail(),
+                customer.getLoyaltyPoints(),
+                favoritePizzas
+            );
+        }
+        
+        // Print table footer
+        System.out.println("+" + "-".repeat(20) + "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(10) + "+" + "-".repeat(30) + "+");
     }
 }
