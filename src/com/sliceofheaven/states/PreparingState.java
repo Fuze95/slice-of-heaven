@@ -1,0 +1,15 @@
+package com.sliceofheaven.states;
+
+import com.sliceofheaven.models.Order;
+
+public class PreparingState implements OrderState {
+    @Override
+    public void handle(Order order) {
+        order.setState(new CookingState());
+    }
+
+    @Override
+    public String getStatusMessage() {
+        return "Preparing your order";
+    }
+}
