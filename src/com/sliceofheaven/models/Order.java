@@ -48,8 +48,8 @@ public class Order implements OrderSubject {
         }
         
         boolean paymentSuccess = paymentStrategy.pay(totalAmount);
-        if (paymentSuccess && totalAmount >= 5000) {
-            customer.addLoyaltyPoints(50);
+        if (paymentSuccess && totalAmount >= 1000) {
+            customer.addLoyaltyPoints(10);
         }
         return paymentSuccess;
     }
