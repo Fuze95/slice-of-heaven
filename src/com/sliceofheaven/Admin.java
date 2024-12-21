@@ -8,9 +8,11 @@ public class Admin {
     private static Admin instance;
     private List<String> towns;
     private Map<String, Customer> customers;
+    private final String adminUsername = "admin";
+    private final String adminPassword = "admin123";
 
     private Admin() {
-        towns = new ArrayList<>(Arrays.asList("Colombo", "Kandy", "Galle"));
+        towns = new ArrayList<>(Arrays.asList("Bandarawela", "Badulla", "Diyatalawa"));
         customers = new HashMap<>();
     }
 
@@ -19,6 +21,10 @@ public class Admin {
             instance = new Admin();
         }
         return instance;
+    }
+
+    public boolean login(String username, String password) {
+        return adminUsername.equals(username) && adminPassword.equals(password);
     }
 
     public void createCustomer(String name, String email, String mobile, String address) {

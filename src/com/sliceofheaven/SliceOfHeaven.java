@@ -10,40 +10,55 @@ public class SliceOfHeaven {
     private static Admin admin = Admin.getInstance();
     private static Map<String, Order> activeOrders = new HashMap<>();
 
+    private static boolean adminLogin() {
+    Scanner scanner = new Scanner(System.in);
+    System.out.println("\n=== Admin Login ===");
+    System.out.print("Username: ");
+    String username = scanner.nextLine();
+    System.out.print("Password: ");
+    String password = scanner.nextLine();
+
+    return admin.login(username, password);
+}
+
     public static void main(String[] args) {
-        while (true) {
-            System.out.println("\n=== Slice of Heaven Pizza ===");
-            System.out.println("1. Create New Customer");
-            System.out.println("2. Place Order");
-            System.out.println("3. Check Order Status");
-            System.out.println("4. Cancel Order");
-            System.out.println("5. Exit");
-            System.out.print("Enter choice: ");
-
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-
-            switch (choice) {
-                case 1:
-                    createCustomer();
-                    break;
-                case 2:
-                    placeOrder();
-                    break;
-                case 3:
-                    checkOrderStatus();
-                    break;
-                case 4:
-                    cancelOrder();
-                    break;
-                case 5:
-                    System.out.println("Thank you for using Slice of Heaven!");
-                    return;
-                default:
-                    System.out.println("Invalid choice!");
-            }
+    System.out.println("\n=== Slice of Heaven Pizza ===");
+    while (!adminLogin()) {
+        System.out.println("Login failed! Please try again.");
+    }
+    System.out.println("Login successful!");
+    while (true) {
+        System.out.println("\n=== Slice of Heaven Pizza ===");
+        System.out.println("1. Create New Customer");
+        System.out.println("2. Place Order");
+        System.out.println("3. Check Order Status");
+        System.out.println("4. Cancel Order");
+        System.out.println("5. Exit");
+        System.out.print("Enter choice: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+        
+        switch (choice) {
+            case 1:
+                createCustomer();
+                break;
+            case 2:
+                placeOrder();
+                break;
+            case 3:
+                checkOrderStatus();
+                break;
+            case 4:
+                cancelOrder();
+                break;
+            case 5:
+                System.out.println("Thank you for using Slice of Heaven!");
+                return;
+            default:
+                System.out.println("Invalid choice!");
         }
     }
+}
 
     private static void createCustomer() {
         System.out.println("\n=== Create New Customer ===");
