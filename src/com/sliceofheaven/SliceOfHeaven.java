@@ -81,35 +81,83 @@ public class SliceOfHeaven {
     }
 
     private static void placeOrder() {
-        System.out.println("\n=== Place Order ===");
-        System.out.print("Enter customer mobile number: ");
-        String mobile = scanner.nextLine();
-
-        Customer customer = admin.getCustomer(mobile);
-        if (customer == null) {
-            System.out.println("Customer not found!");
-            return;
-        }
-
-        System.out.println("Available towns for delivery: " + admin.getTowns());
-        System.out.print("Is this for delivery? (y/n): ");
-        boolean isDelivery = scanner.nextLine().toLowerCase().startsWith("y");
-
-        Order order = new Order(customer, isDelivery);
-        
-        while (true) {
-            Pizza pizza = createPizza();
-            if (pizza != null) {
-                order.addPizza(pizza);
+            System.out.println("\n=== Place Order ===");
+            System.out.print("Enter customer mobile number: ");
+            String mobile = scanner.nextLine();
+            Customer customer = admin.getCustomer(mobile);
+            if (customer == null) {
+                System.out.println("Customer not found!");
+                return;
             }
 
-            System.out.print("Add another pizza? (y/n): ");
-            if (!scanner.nextLine().toLowerCase().startsWith("y")) {
-                break;
+            // Check for favorite pizzas
+            List<Pizza> savedPizzas = customer.getSavedPizzas();
+            if (!savedPizzas.isEmpty()) {
+                System.out.print("Do you want to order from your favorite pizzas? (Y/N): ");
+                if (scanner.nextLine().toLowerCase().startsWith("y")) {
+                    System.out.println("\n=== Saved Favorite Pizzas ===");
+                    for (int i = 0; i < savedPizzas.size(); i++) {
+                        Pizza pizza = savedPizzas.get(i);
+                        System.out.println((i + 1) + ". " + pizza.getSpecialName() + 
+                                         " - Size: " + pizza.getSize() + 
+                                         ", Crust: " + pizza.getCrust() +
+                                         ", Sauce: " + pizza.getSauce());
+                    }
+
+                    Order order = new Order(customer, false);
+                    
+                    while (true) {
+                        System.out.print("\nSelect pizza number (0 to finish): ");
+                        int choice = scanner.nextInt();
+                        scanner.nextLine();
+                        
+                        if (choice == 0) break;
+                        
+                        if (choice > 0 && choice <= savedPizzas.size()) {
+                            order.addPizza(savedPizzas.get(choice - 1));
+                        } else {
+                            System.out.println("Invalid choice!");
+                        }
+                        
+                        System.out.print("Add another favorite pizza? (y/n): ");
+                        if (!scanner.nextLine().toLowerCase().startsWith("y")) {
+                            break;
+                        }
+                    }
+
+                    // Ask for delivery after pizza selection
+                    System.out.println("Available towns for delivery: " + admin.getTowns());
+                    System.out.print("Is this for delivery? (y/n): ");
+                    boolean isDelivery = scanner.nextLine().toLowerCase().startsWith("y");
+                    order.setDelivery(isDelivery);
+
+                    // Skip to payment processing
+                    processPayment(order, customer);
+                    return;
+                }
             }
+
+            // Normal ordering process
+            System.out.println("Available towns for delivery: " + admin.getTowns());
+            System.out.print("Is this for delivery? (y/n): ");
+            boolean isDelivery = scanner.nextLine().toLowerCase().startsWith("y");
+            Order order = new Order(customer, isDelivery);
+            
+            while (true) {
+                Pizza pizza = createPizza(customer);
+                if (pizza != null) {
+                    order.addPizza(pizza);
+                }
+                System.out.print("Add another pizza? (y/n): ");
+                if (!scanner.nextLine().toLowerCase().startsWith("y")) {
+                    break;
+                }
+            }
+
+            processPayment(order, customer);
         }
 
-        // Payment processing
+    private static void processPayment(Order order, Customer customer) {
         System.out.println("\nTotal Amount: " + order.getTotalAmount() + " LKR");
         System.out.println("Select payment method:");
         System.out.println("1. Credit Card");
@@ -119,7 +167,6 @@ public class SliceOfHeaven {
         
         int paymentChoice = scanner.nextInt();
         scanner.nextLine();
-
         PaymentStrategy paymentStrategy;
         switch (paymentChoice) {
             case 1:
@@ -149,7 +196,7 @@ public class SliceOfHeaven {
                 System.out.println("Invalid payment method!");
                 return;
         }
-
+        
         order.setPaymentStrategy(paymentStrategy);
         if (order.processPayment()) {
             activeOrders.put(order.getOrderId(), order);
@@ -161,90 +208,98 @@ public class SliceOfHeaven {
         }
     }
 
-    private static Pizza createPizza() {
-        System.out.println("\n=== Create Pizza ===");
-        Pizza.PizzaBuilder builder = new Pizza.PizzaBuilder();
-
-        // Size selection
-        System.out.println("Select size:");
-        System.out.println("1. Personal (1000 LKR)");
-        System.out.println("2. Medium (1800 LKR)");
-        System.out.println("3. Large (2400 LKR)");
-        System.out.print("Enter your choice: ");
-        int sizeChoice = scanner.nextInt();
-        scanner.nextLine();
-        
-        switch (sizeChoice) {
-            case 1: builder.setSize("personal"); break;
-            case 2: builder.setSize("medium"); break;
-            case 3: builder.setSize("large"); break;
-            default: 
-                System.out.println("Invalid size!");
-                return null;
-        }
-
-        // Crust selection
-        System.out.println("\nSelect crust type:");
-        System.out.println("1. Pan");
-        System.out.println("2. Thin");
-        System.out.print("Enter your choice: ");
-        int crustChoice = scanner.nextInt();
-        scanner.nextLine();
-        
-        switch (crustChoice) {
-            case 1: builder.setCrust("pan"); break;
-            case 2: builder.setCrust("thin"); break;
-            default:
-                System.out.println("Invalid crust type!");
-                return null;
-        }
-
-        // Sauce selection
-        System.out.println("\nSelect sauce:");
-        System.out.println("1. Mayo");
-        System.out.println("2. Tomato");
-        System.out.println("3. Kotchchi");
-        System.out.print("Enter your choice: ");
-        int sauceChoice = scanner.nextInt();
-        scanner.nextLine();
-        
-        switch (sauceChoice) {
-            case 1: builder.setSauce("mayo"); break;
-            case 2: builder.setSauce("tomato"); break;
-            case 3: builder.setSauce("kotchchi"); break;
-            default:
-                System.out.println("Invalid sauce!");
-                return null;
-        }
-
-        // Toppings selection (150 LKR each)
-        while (true) {
-            System.out.println("\nAdd toppings (150 LKR each):");
-            System.out.println("1. Pepperoni");
-            System.out.println("2. Mushroom");
-            System.out.println("3. Onion");
-            System.out.println("4. Done adding toppings");
+    private static Pizza createPizza(Customer customer) {
+            System.out.println("\n=== Create Pizza ===");
+            Pizza.PizzaBuilder builder = new Pizza.PizzaBuilder();
+            // Size selection
+            System.out.println("Select size:");
+            System.out.println("1. Personal (1000 LKR)");
+            System.out.println("2. Medium (1800 LKR)");
+            System.out.println("3. Large (2400 LKR)");
             System.out.print("Enter your choice: ");
-            
-            int toppingChoice = scanner.nextInt();
+            int sizeChoice = scanner.nextInt();
             scanner.nextLine();
             
-            if (toppingChoice == 4) break;
-            
-            switch (toppingChoice) {
-                case 1: builder.addTopping("pepperoni"); break;
-                case 2: builder.addTopping("mushroom"); break;
-                case 3: builder.addTopping("onion"); break;
-                default: System.out.println("Invalid topping!");
+            switch (sizeChoice) {
+                case 1: builder.setSize("personal"); break;
+                case 2: builder.setSize("medium"); break;
+                case 3: builder.setSize("large"); break;
+                default: 
+                    System.out.println("Invalid size!");
+                    return null;
             }
-        }
-
-        // Extra cheese option (200 LKR)
-        System.out.print("\nAdd extra cheese for 200 LKR? (y/n): ");
-        boolean extraCheese = scanner.nextLine().toLowerCase().startsWith("y");
-        builder.setExtraCheese(extraCheese);
-
-        return builder.build();
+            // Crust selection
+            System.out.println("\nSelect crust type:");
+            System.out.println("1. Pan");
+            System.out.println("2. Thin");
+            System.out.print("Enter your choice: ");
+            int crustChoice = scanner.nextInt();
+            scanner.nextLine();
+            
+            switch (crustChoice) {
+                case 1: builder.setCrust("pan"); break;
+                case 2: builder.setCrust("thin"); break;
+                default:
+                    System.out.println("Invalid crust type!");
+                    return null;
+            }
+            // Sauce selection
+            System.out.println("\nSelect sauce:");
+            System.out.println("1. Mayo");
+            System.out.println("2. Tomato");
+            System.out.println("3. Kotchchi");
+            System.out.print("Enter your choice: ");
+            int sauceChoice = scanner.nextInt();
+            scanner.nextLine();
+            
+            switch (sauceChoice) {
+                case 1: builder.setSauce("mayo"); break;
+                case 2: builder.setSauce("tomato"); break;
+                case 3: builder.setSauce("kotchchi"); break;
+                default:
+                    System.out.println("Invalid sauce!");
+                    return null;
+            }
+            // Toppings selection (150 LKR each)
+            while (true) {
+                System.out.println("\nAdd toppings (150 LKR each):");
+                System.out.println("1. Pepperoni");
+                System.out.println("2. Mushroom");
+                System.out.println("3. Onion");
+                System.out.println("4. Done adding toppings");
+                System.out.print("Enter your choice: ");
+                
+                int toppingChoice = scanner.nextInt();
+                scanner.nextLine();
+                
+                if (toppingChoice == 4) break;
+                
+                switch (toppingChoice) {
+                    case 1: builder.addTopping("pepperoni"); break;
+                    case 2: builder.addTopping("mushroom"); break;
+                    case 3: builder.addTopping("onion"); break;
+                    default: System.out.println("Invalid topping!");
+                }
+            }
+            // Extra cheese option (200 LKR)
+            System.out.print("\nAdd extra cheese for 200 LKR? (y/n): ");
+            boolean extraCheese = scanner.nextLine().toLowerCase().startsWith("y");
+            builder.setExtraCheese(extraCheese);
+            
+            Pizza pizza = builder.build();
+            
+            System.out.print("Add this pizza as favorite [Y/N]: ");
+            String answer = scanner.nextLine();
+            if (answer.equalsIgnoreCase("Y")) {
+                System.out.print("Enter Special name for the pizza: ");
+                String specialName = scanner.nextLine();
+                pizza.setSpecialName(specialName);
+                
+                customer.savePizza(pizza);
+                System.out.println("Pizza saved as favorite with name: " + specialName);
+            }
+            
+            return pizza;
     }
 
     private static void checkOrderStatus() {

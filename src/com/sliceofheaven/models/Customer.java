@@ -35,4 +35,14 @@ public class Customer implements OrderObserver {
     public String getEmail() { 
         return email; 
     }
+
+    public void savePizza(Pizza pizza) {
+        if (pizza != null) {
+            savedPizzas.add(pizza);
+        }
+    }
+
+    public List<Pizza> getSavedPizzas() {
+        return savedPizzas;
+    }
 }

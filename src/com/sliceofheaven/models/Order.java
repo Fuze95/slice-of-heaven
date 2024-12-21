@@ -85,6 +85,10 @@ public class Order implements OrderSubject {
         }
     }
 
+    public void setDelivery(boolean isDelivery) {
+        this.isDelivery = isDelivery;
+    }
+
     public String getOrderId() { return orderId; }
     public double getTotalAmount() { return totalAmount; }
     public OrderState getCurrentState() { return currentState; }

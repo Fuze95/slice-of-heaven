@@ -1,5 +1,4 @@
 package com.sliceofheaven.models;
-
 import java.util.*;
 
 // Builder Pattern - Pizza
@@ -10,6 +9,7 @@ public class Pizza {
     private String sauce;
     private boolean extraCheese;
     private double price;
+    private String specialName;
 
     private Pizza(PizzaBuilder builder) {
         this.size = builder.size;
@@ -17,6 +17,7 @@ public class Pizza {
         this.toppings = builder.toppings;
         this.sauce = builder.sauce;
         this.extraCheese = builder.extraCheese;
+        this.specialName = builder.specialName;
         calculatePrice();
     }
 
@@ -33,7 +34,17 @@ public class Pizza {
         if (extraCheese) price += 200.0;
     }
 
+    // Getters
     public double getPrice() { return price; }
+    public String getSize() { return size; }
+    public String getCrust() { return crustType; }
+    public String getSauce() { return sauce; }
+    public String getSpecialName() { return specialName; }
+
+    // Setter for special name
+    public void setSpecialName(String specialName) {
+        this.specialName = specialName;
+    }
 
     public static class PizzaBuilder {
         private String size;
@@ -41,6 +52,7 @@ public class Pizza {
         private List<String> toppings;
         private String sauce;
         private boolean extraCheese;
+        private String specialName;
 
         public PizzaBuilder() {
             this.toppings = new ArrayList<>();
@@ -68,6 +80,11 @@ public class Pizza {
 
         public PizzaBuilder setExtraCheese(boolean extra) {
             this.extraCheese = extra;
+            return this;
+        }
+
+        public PizzaBuilder setSpecialName(String specialName) {
+            this.specialName = specialName;
             return this;
         }
 
