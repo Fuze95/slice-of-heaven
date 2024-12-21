@@ -27,16 +27,18 @@ public class SliceOfHeaven {
         System.out.println("Login failed! Please try again.");
     }
     System.out.println("Login successful!");
+
     while (true) {
         System.out.println("\n=== Slice of Heaven Pizza ===");
         System.out.println("1. Create New Customer");
         System.out.println("2. Place Order");
         System.out.println("3. Check Order Status");
         System.out.println("4. Cancel Order");
-        System.out.println("5. Exit");
+        System.out.println("5. Display Customers");
+        System.out.println("6. Exit");
         System.out.print("Enter choice: ");
         int choice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine();
         
         switch (choice) {
             case 1:
@@ -52,6 +54,9 @@ public class SliceOfHeaven {
                 cancelOrder();
                 break;
             case 5:
+                displayCustomers();
+                break;
+            case 6:
                 System.out.println("Thank you for using Slice of Heaven!");
                 return;
             default:
@@ -110,9 +115,10 @@ public class SliceOfHeaven {
         System.out.println("1. Credit Card");
         System.out.println("2. PayPal");
         System.out.println("3. KOKO Pay");
+        System.out.print("Enter your choice: ");
         
         int paymentChoice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine();
 
         PaymentStrategy paymentStrategy;
         switch (paymentChoice) {
@@ -268,5 +274,34 @@ public class SliceOfHeaven {
         } else {
             System.out.println("Order not found!");
         }
+    }
+
+    private static void displayCustomers() {
+    Map<String, Customer> customers = admin.getCustomers();
+    
+    if (customers.isEmpty()) {
+        System.out.println("\nNo customers registered yet!");
+        return;
+    }
+
+    System.out.println("\n=== Customer List ===");
+    // Print table header
+    System.out.println("+" + "-".repeat(20) + "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(10) + "+");
+    System.out.printf("| %-18s | %-13s | %-23s | %-8s |\n", "Name", "Mobile", "Email", "Points");
+    System.out.println("+" + "-".repeat(20) + "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(10) + "+");
+
+    // Print each customer's details
+    for (Map.Entry<String, Customer> entry : customers.entrySet()) {
+        Customer customer = entry.getValue();
+        System.out.printf("| %-18s | %-13s | %-23s | %-8d |\n",
+            customer.getName(),
+            entry.getKey(),
+            customer.getEmail(),
+            customer.getLoyaltyPoints()
+        );
+    }
+    
+    // Print table footer
+        System.out.println("+" + "-".repeat(20) + "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(10) + "+");
     }
 }

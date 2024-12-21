@@ -39,4 +39,8 @@ public class Admin {
     public List<String> getTowns() {
         return towns;
     }
+
+    public Map<String, Customer> getCustomers() {
+    return customers;
+    }
 }

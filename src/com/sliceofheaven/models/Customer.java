@@ -31,4 +31,8 @@ public class Customer implements OrderObserver {
 
     public String getName() { return name; }
     public int getLoyaltyPoints() { return loyaltyPoints; }
+
+    public String getEmail() { 
+        return email; 
+    }
 }
