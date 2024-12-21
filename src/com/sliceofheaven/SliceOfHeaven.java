@@ -98,7 +98,7 @@ public class SliceOfHeaven {
             // Check for favorite pizzas
             List<Pizza> savedPizzas = customer.getSavedPizzas();
             if (!savedPizzas.isEmpty()) {
-                System.out.print("Do you want to order from your favorite pizzas? (Y/N): ");
+                System.out.print("Do you want to order from your favorite pizzas? [Y/N]: ");
                 if (scanner.nextLine().toLowerCase().startsWith("y")) {
                     System.out.println("\n=== Saved Favorite Pizzas ===");
                     for (int i = 0; i < savedPizzas.size(); i++) {
@@ -124,7 +124,7 @@ public class SliceOfHeaven {
                             System.out.println("Invalid choice!");
                         }
                         
-                        System.out.print("Add another favorite pizza? (y/n): ");
+                        System.out.print("Add another favorite pizza? [Y/N]: ");
                         if (!scanner.nextLine().toLowerCase().startsWith("y")) {
                             break;
                         }
@@ -132,7 +132,7 @@ public class SliceOfHeaven {
 
                     // Ask for delivery after pizza selection
                     System.out.println("Available towns for delivery: " + admin.getTowns());
-                    System.out.print("Is this for delivery? (y/n): ");
+                    System.out.print("Is this for delivery? [Y/N]: ");
                     boolean isDelivery = scanner.nextLine().toLowerCase().startsWith("y");
                     order.setDelivery(isDelivery);
 
@@ -144,7 +144,7 @@ public class SliceOfHeaven {
 
             // Normal ordering process
             System.out.println("Available towns for delivery: " + admin.getTowns());
-            System.out.print("Is this for delivery? (y/n): ");
+            System.out.print("Is this for delivery? [Y/N]: ");
             boolean isDelivery = scanner.nextLine().toLowerCase().startsWith("y");
             Order order = new Order(customer, isDelivery);
             
@@ -153,7 +153,7 @@ public class SliceOfHeaven {
                 if (pizza != null) {
                     order.addPizza(pizza);
                 }
-                System.out.print("Add another pizza? (y/n): ");
+                System.out.print("Add another pizza? [Y/N]: ");
                 if (!scanner.nextLine().toLowerCase().startsWith("y")) {
                     break;
                 }
@@ -287,7 +287,7 @@ public class SliceOfHeaven {
                 }
             }
             // Extra cheese option (200 LKR)
-            System.out.print("\nAdd extra cheese for 200 LKR? (y/n): ");
+            System.out.print("\nAdd extra cheese for 200 LKR? [Y/N]: ");
             boolean extraCheese = scanner.nextLine().toLowerCase().startsWith("y");
             builder.setExtraCheese(extraCheese);
             
@@ -314,7 +314,7 @@ public class SliceOfHeaven {
         Order order = activeOrders.get(orderId);
         if (order != null) {
             System.out.println("Current status: " + order.getCurrentState().getStatusMessage());
-            System.out.print("Move to next state? (y/n): ");
+            System.out.print("Move to next state? [Y/N]: ");
             if (scanner.nextLine().toLowerCase().startsWith("y")) {
                 order.nextState();
             }
