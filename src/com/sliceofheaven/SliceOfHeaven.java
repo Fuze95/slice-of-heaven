@@ -164,6 +164,7 @@ public class SliceOfHeaven {
         System.out.println("1. Personal (1000 LKR)");
         System.out.println("2. Medium (1800 LKR)");
         System.out.println("3. Large (2400 LKR)");
+        System.out.print("Enter your choice: ");
         int sizeChoice = scanner.nextInt();
         scanner.nextLine();
         
@@ -180,6 +181,7 @@ public class SliceOfHeaven {
         System.out.println("\nSelect crust type:");
         System.out.println("1. Pan");
         System.out.println("2. Thin");
+        System.out.print("Enter your choice: ");
         int crustChoice = scanner.nextInt();
         scanner.nextLine();
         
@@ -196,6 +198,7 @@ public class SliceOfHeaven {
         System.out.println("1. Mayo");
         System.out.println("2. Tomato");
         System.out.println("3. Kotchchi");
+        System.out.print("Enter your choice: ");
         int sauceChoice = scanner.nextInt();
         scanner.nextLine();
         
@@ -215,6 +218,7 @@ public class SliceOfHeaven {
             System.out.println("2. Mushroom");
             System.out.println("3. Onion");
             System.out.println("4. Done adding toppings");
+            System.out.print("Enter your choice: ");
             
             int toppingChoice = scanner.nextInt();
             scanner.nextLine();
