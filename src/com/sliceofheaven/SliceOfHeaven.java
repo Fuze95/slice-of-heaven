@@ -36,7 +36,8 @@ public class SliceOfHeaven {
         System.out.println("3. Check Order Status");
         System.out.println("4. Cancel Order");
         System.out.println("5. Display Customers");
-        System.out.println("6. Exit");
+        System.out.println("6. Display Orders");
+        System.out.println("7. Exit"); 
         System.out.print("Enter choice: ");
         int choice = scanner.nextInt();
         scanner.nextLine();
@@ -58,6 +59,9 @@ public class SliceOfHeaven {
                 displayCustomers();
                 break;
             case 6:
+                displayOrders();         
+                break;
+            case 7:                     
                 System.out.println("Thank you for using Slice of Heaven!");
                 return;
             default:
@@ -349,7 +353,7 @@ public class SliceOfHeaven {
         // Print each customer's details
         for (Map.Entry<String, Customer> entry : customers.entrySet()) {
             Customer customer = entry.getValue();
-            
+
             List<Pizza> savedPizzas = customer.getSavedPizzas();
             String favoritePizzas = savedPizzas.isEmpty() ? "None" : 
                 savedPizzas.stream()
@@ -370,5 +374,35 @@ public class SliceOfHeaven {
         
         // Print table footer
         System.out.println("+" + "-".repeat(20) + "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(10) + "+" + "-".repeat(30) + "+");
+    }
+
+    private static void displayOrders() {
+        if (activeOrders.isEmpty()) {
+            System.out.println("\nNo active orders!");
+            return;
+        }
+        
+        System.out.println("\n=== Active Orders ===");
+        // Increased column widths, especially for Status
+        System.out.println("+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(15) + "+" + "-".repeat(35) + "+");
+        System.out.printf("| %-13s | %-23s | %-13s | %-33s |\n",
+            "Order ID", "Customer Name", "Mobile", "Status");
+        System.out.println("+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(15) + "+" + "-".repeat(35) + "+");
+        
+        // Print each order's details
+        for (Map.Entry<String, Order> entry : activeOrders.entrySet()) {
+            Order order = entry.getValue();
+            Customer customer = order.getCustomer();
+            
+            System.out.printf("| %-13s | %-23s | %-13s | %-33s |\n",
+                order.getOrderId(),
+                customer.getName(),
+                customer.getMobileNumber(),
+                order.getCurrentState().getStatusMessage()
+            );
+        }
+        
+        // Print table footer
+        System.out.println("+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(15) + "+" + "-".repeat(35) + "+");
     }
 }
