@@ -47,10 +47,10 @@ public class Admin {
     }
 
     public Map<String, Customer> getCustomers() {
-    return customers;
+        return customers;
     }
 
     public double getDeliveryFee(String town) {
-    return deliveryFees.getOrDefault(town, 500.0);
+        return deliveryFees.getOrDefault(town, 1000.0);
     }
 }

@@ -163,16 +163,21 @@ public class SliceOfHeaven {
         order.setDelivery(isDelivery);
         
         if (isDelivery) {
-            while (true) {
-                System.out.print("Enter delivery town: ");
-                String town = scanner.nextLine();
-                if (admin.getTowns().contains(town)) {
-                    order.setDeliveryTown(town);
-                    System.out.printf("Delivery fee for %s: LKR %.2f%n", 
-                        town, admin.getDeliveryFee(town));
-                    break;
+            System.out.print("Enter delivery town: ");
+            String town = scanner.nextLine();
+            order.setDeliveryTown(town);
+            
+            double deliveryFee = admin.getDeliveryFee(town);
+            if (admin.getTowns().contains(town)) {
+                System.out.printf("Delivery fee for %s: LKR %.2f%n", town, deliveryFee);
+            } else {
+                System.out.printf("Note: %s is outside our regular delivery area.%n", town);
+                System.out.printf("Default delivery fee will be charged: LKR %.2f%n", deliveryFee);
+                if (!promptYesNo("Do you want to proceed with this delivery?")) {
+                    System.out.println("Please select a different town.");
+                    setupDelivery(order);
+                    return;
                 }
-                System.out.println("Invalid town! Please choose from available towns.");
             }
         }
     }
