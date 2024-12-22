@@ -30,14 +30,8 @@ public class SliceOfHeaven {
     System.out.println("Login successful!");
 
     while (true) {
-        System.out.println("\n=== Slice of Heaven Pizza ===");
-        System.out.println("1. Create New Customer");
-        System.out.println("2. Place Order");
-        System.out.println("3. Check Order Status");
-        System.out.println("4. Cancel Order");
-        System.out.println("5. Display All Customers");
-        System.out.println("6. Display All Orders");
-        System.out.println("7. Exit"); 
+        System.out.println("\n=== Slice of Heaven Pizza ===\n1. Create Customer\n2. Place Order" +
+                         "\n3. Check Order\n4. Cancel Order\n5. View Customers\n6. View Orders\n7. Exit"); 
         System.out.print("Enter choice: ");
         int choice = scanner.nextInt();
         scanner.nextLine();
