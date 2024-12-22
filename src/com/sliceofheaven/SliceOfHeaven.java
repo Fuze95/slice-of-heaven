@@ -23,6 +23,7 @@ public class SliceOfHeaven {
 }
 
     public static void main(String[] args) {
+    addDummyCustomers();// Added this for testing
     System.out.println("\n=== Slice of Heaven Pizza ===");
     while (!adminLogin()) {
         System.out.println("Login failed! Please try again.");
@@ -448,5 +449,22 @@ public class SliceOfHeaven {
         });
         
         System.out.println(border);
+    }
+
+    // TODO: REMOVE BEFORE PRODUCTION - Testing data only
+    private static void addDummyCustomers() {
+        // Dummy customer data
+        String[][] dummyData = {
+            {"John Doe", "john@email.com", "09171234567", "123 Main St"},
+            {"Jane Smith", "jane@email.com", "09189876543", "456 Oak Ave"},
+            {"Mike Wilson", "mike@email.com", "09161112222", "789 Pine Rd"},
+            {"Sarah Brown", "sarah@email.com", "09209998888", "321 Elm St"},
+            {"Tom Garcia", "tom@email.com", "09267774444", "654 Cedar Ln"}
+        };
+
+        for (String[] customer : dummyData) {
+            admin.createCustomer(customer[0], customer[1], customer[2], customer[3]);
+        }
+        System.out.println("Dummy customers added successfully!");
     }
 }
