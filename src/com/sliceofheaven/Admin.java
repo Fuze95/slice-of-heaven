@@ -8,12 +8,18 @@ public class Admin {
     private static Admin instance;
     private List<String> towns;
     private Map<String, Customer> customers;
+    private Map<String, Double> deliveryFees;
     private final String adminUsername = "admin";
     private final String adminPassword = "admin123";
 
     private Admin() {
-        towns = new ArrayList<>(Arrays.asList("Bandarawela", "Badulla", "Diyatalawa"));
+        towns = new ArrayList<>(Arrays.asList("Bandarawela", "Diyatalawa", "Ella"));
         customers = new HashMap<>();
+
+        deliveryFees = new HashMap<>();
+        deliveryFees.put("Bandarawela", 150.0);
+        deliveryFees.put("Diyatalawa", 200.0);
+        deliveryFees.put("Ella", 250.0);
     }
 
     public static Admin getInstance() {
@@ -41,6 +47,10 @@ public class Admin {
     }
 
     public Map<String, Customer> getCustomers() {
-    return customers;
+        return customers;
+    }
+
+    public double getDeliveryFee(String town) {
+        return deliveryFees.getOrDefault(town, 1000.0);
     }
 }
