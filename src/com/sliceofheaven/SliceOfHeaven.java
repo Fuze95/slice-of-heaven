@@ -35,8 +35,8 @@ public class SliceOfHeaven {
         System.out.println("2. Place Order");
         System.out.println("3. Check Order Status");
         System.out.println("4. Cancel Order");
-        System.out.println("5. Display Customers");
-        System.out.println("6. Display Orders");
+        System.out.println("5. Display All Customers");
+        System.out.println("6. Display All Orders");
         System.out.println("7. Exit"); 
         System.out.print("Enter choice: ");
         int choice = scanner.nextInt();
