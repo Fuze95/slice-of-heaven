@@ -395,7 +395,7 @@ public class SliceOfHeaven {
 
         double total = order.getPizzas().stream().mapToDouble(Pizza::getPrice).sum();
         System.out.println("\n-----------------------");
-        System.out.printf("Delivery Type: %s%n", order.isDelivery() ? "Yes" : "Takeaway");
+        System.out.printf("Delivery Type: %s%n", order.isDelivery() ? "Delivery" : "Takeaway");
         
         if (order.isDelivery()) {
             String town = order.getDeliveryTown();
