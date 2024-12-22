@@ -379,7 +379,7 @@ public class SliceOfHeaven {
         System.out.println("\n=== Order Summary ===");
         
         order.getPizzas().forEach(pizza -> {
-            System.out.printf("\nPizza %d:%n--------------------%n", 
+            System.out.printf("\nPizza %d:%n-----------------------%n", 
                 order.getPizzas().indexOf(pizza) + 1);
             System.out.printf("Size: %s%nCrust: %s%nSauce: %s%n", 
                 pizza.getSize(), pizza.getCrust(), pizza.getSauce());
@@ -394,7 +394,7 @@ public class SliceOfHeaven {
         });
 
         double total = order.getPizzas().stream().mapToDouble(Pizza::getPrice).sum();
-        System.out.println("\n-------------------");
+        System.out.println("\n-----------------------");
         System.out.printf("Delivery Type: %s%n", order.isDelivery() ? "Yes" : "Takeaway");
         
         if (order.isDelivery()) {
@@ -405,7 +405,7 @@ public class SliceOfHeaven {
             total += deliveryFee;
         }
 
-        System.out.printf("%n-------------------%nTotal Amount: %.2f LKR%n", total);
+        System.out.printf("%n-----------------------%nTotal Amount: %.2f LKR%n", total);
     }
 
     private static void displayCustomers() {
