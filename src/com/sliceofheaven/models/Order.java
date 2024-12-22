@@ -24,6 +24,7 @@ public class Order implements OrderSubject {
         this.currentState = new PlacedState();
         this.observers = new ArrayList<>();
         attach(customer);
+        this.currentState = new PlacedState();
     }
 
     public void addPizza(Pizza pizza) {

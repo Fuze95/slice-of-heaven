@@ -1,5 +1,4 @@
 package com.sliceofheaven.states;
-
 import com.sliceofheaven.models.Order;
 
 public class CookingState implements OrderState {
@@ -11,5 +10,10 @@ public class CookingState implements OrderState {
     @Override
     public String getStatusMessage() {
         return "Your pizza is in the oven";
+    }
+
+    @Override
+    public OrderState previewNextState() {
+        return new ReadyState();
     }
 }

@@ -224,7 +224,7 @@ public class SliceOfHeaven {
         order.setPaymentStrategy(paymentStrategy);
         if (order.processPayment()) {
             activeOrders.put(order.getOrderId(), order);
-            order.nextState(); // Move to first state
+            order.notifyObservers(order.getCurrentState().getStatusMessage());
             System.out.println("Order placed successfully! Order ID: " + order.getOrderId());
             System.out.println("Current Loyalty Points: " + customer.getLoyaltyPoints());
         } else {
@@ -332,10 +332,20 @@ public class SliceOfHeaven {
         
         Order order = activeOrders.get(orderId);
         if (order != null) {
-            System.out.println("Current status: " + order.getCurrentState().getStatusMessage());
-            System.out.print("Move to next state? [Y/N]: ");
-            if (scanner.nextLine().toLowerCase().startsWith("y")) {
-                order.nextState();
+            OrderState currentState = order.getCurrentState();
+            System.out.println("Current status: " + currentState.getStatusMessage());
+            
+            // Preview next state
+            OrderState nextState = currentState.previewNextState();
+            if (nextState != null) {
+                System.out.println("Next state will be: " + nextState.getStatusMessage());
+                
+                System.out.print("Move to next state? [Y/N]: ");
+                if (scanner.nextLine().toLowerCase().startsWith("y")) {
+                    order.nextState();
+                }
+            } else {
+                System.out.println("This is the final state.");
             }
         } else {
             System.out.println("Order not found!");
