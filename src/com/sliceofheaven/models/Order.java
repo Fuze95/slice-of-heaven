@@ -92,4 +92,7 @@ public class Order implements OrderSubject {
     public String getOrderId() { return orderId; }
     public double getTotalAmount() { return totalAmount; }
     public OrderState getCurrentState() { return currentState; }
+    public Customer getCustomer() { return customer; }
+    public List<Pizza> getPizzas() { return pizzas; }
+    public boolean isDelivery() { return isDelivery; }
 }

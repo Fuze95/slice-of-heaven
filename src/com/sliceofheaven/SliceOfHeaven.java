@@ -4,6 +4,7 @@ import com.sliceofheaven.models.*;
 import com.sliceofheaven.payment.*;
 import com.sliceofheaven.states.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SliceOfHeaven {
     private static Scanner scanner = new Scanner(System.in);
@@ -34,8 +35,9 @@ public class SliceOfHeaven {
         System.out.println("2. Place Order");
         System.out.println("3. Check Order Status");
         System.out.println("4. Cancel Order");
-        System.out.println("5. Display Customers");
-        System.out.println("6. Exit");
+        System.out.println("5. Display All Customers");
+        System.out.println("6. Display All Orders");
+        System.out.println("7. Exit"); 
         System.out.print("Enter choice: ");
         int choice = scanner.nextInt();
         scanner.nextLine();
@@ -57,6 +59,9 @@ public class SliceOfHeaven {
                 displayCustomers();
                 break;
             case 6:
+                displayOrders();         
+                break;
+            case 7:                     
                 System.out.println("Thank you for using Slice of Heaven!");
                 return;
             default:
@@ -93,7 +98,7 @@ public class SliceOfHeaven {
             // Check for favorite pizzas
             List<Pizza> savedPizzas = customer.getSavedPizzas();
             if (!savedPizzas.isEmpty()) {
-                System.out.print("Do you want to order from your favorite pizzas? (Y/N): ");
+                System.out.print("Do you want to order from your favorite pizzas? [Y/N]: ");
                 if (scanner.nextLine().toLowerCase().startsWith("y")) {
                     System.out.println("\n=== Saved Favorite Pizzas ===");
                     for (int i = 0; i < savedPizzas.size(); i++) {
@@ -111,7 +116,13 @@ public class SliceOfHeaven {
                         int choice = scanner.nextInt();
                         scanner.nextLine();
                         
-                        if (choice == 0) break;
+                        if (choice == 0) {
+                            if (order.getPizzas().isEmpty()) {
+                                System.out.println("No pizzas selected!");
+                                return;
+                            }
+                            break;
+                        }
                         
                         if (choice > 0 && choice <= savedPizzas.size()) {
                             order.addPizza(savedPizzas.get(choice - 1));
@@ -119,7 +130,7 @@ public class SliceOfHeaven {
                             System.out.println("Invalid choice!");
                         }
                         
-                        System.out.print("Add another favorite pizza? (y/n): ");
+                        System.out.print("Add another favorite pizza? [Y/N]: ");
                         if (!scanner.nextLine().toLowerCase().startsWith("y")) {
                             break;
                         }
@@ -127,11 +138,17 @@ public class SliceOfHeaven {
 
                     // Ask for delivery after pizza selection
                     System.out.println("Available towns for delivery: " + admin.getTowns());
-                    System.out.print("Is this for delivery? (y/n): ");
+                    System.out.print("Is this for delivery? [Y/N]: ");
                     boolean isDelivery = scanner.nextLine().toLowerCase().startsWith("y");
                     order.setDelivery(isDelivery);
 
-                    // Skip to payment processing
+                    displayOrderSummary(order);
+                    System.out.print("\nConfirm order? [Y/N]: ");
+                    if (!scanner.nextLine().toLowerCase().startsWith("y")) {
+                        System.out.println("Order cancelled!");
+                        return;
+                    }
+                    // Proceed to payment processing
                     processPayment(order, customer);
                     return;
                 }
@@ -139,7 +156,7 @@ public class SliceOfHeaven {
 
             // Normal ordering process
             System.out.println("Available towns for delivery: " + admin.getTowns());
-            System.out.print("Is this for delivery? (y/n): ");
+            System.out.print("Is this for delivery? [Y/N]: ");
             boolean isDelivery = scanner.nextLine().toLowerCase().startsWith("y");
             Order order = new Order(customer, isDelivery);
             
@@ -148,10 +165,17 @@ public class SliceOfHeaven {
                 if (pizza != null) {
                     order.addPizza(pizza);
                 }
-                System.out.print("Add another pizza? (y/n): ");
+                System.out.print("Add another pizza? [Y/N]: ");
                 if (!scanner.nextLine().toLowerCase().startsWith("y")) {
                     break;
                 }
+            }
+
+            displayOrderSummary(order);
+            System.out.print("\nConfirm order? [Y/N]: ");
+            if (!scanner.nextLine().toLowerCase().startsWith("y")) {
+                System.out.println("Order cancelled!");
+                return;
             }
 
             processPayment(order, customer);
@@ -282,7 +306,7 @@ public class SliceOfHeaven {
                 }
             }
             // Extra cheese option (200 LKR)
-            System.out.print("\nAdd extra cheese for 200 LKR? (y/n): ");
+            System.out.print("\nAdd extra cheese for 200 LKR? [Y/N]: ");
             boolean extraCheese = scanner.nextLine().toLowerCase().startsWith("y");
             builder.setExtraCheese(extraCheese);
             
@@ -309,7 +333,7 @@ public class SliceOfHeaven {
         Order order = activeOrders.get(orderId);
         if (order != null) {
             System.out.println("Current status: " + order.getCurrentState().getStatusMessage());
-            System.out.print("Move to next state? (y/n): ");
+            System.out.print("Move to next state? [Y/N]: ");
             if (scanner.nextLine().toLowerCase().startsWith("y")) {
                 order.nextState();
             }
@@ -331,32 +355,109 @@ public class SliceOfHeaven {
         }
     }
 
+    private static void displayOrderSummary(Order order) {
+        System.out.println("\n=== Order Summary ===");
+        List<Pizza> pizzas = order.getPizzas();
+        double total = 0;
+        
+        for (int i = 0; i < pizzas.size(); i++) {
+            Pizza pizza = pizzas.get(i);
+            System.out.println("\nPizza " + (i + 1) + ":");
+            System.out.println("-------------------");
+            System.out.println("Size: " + pizza.getSize());
+            System.out.println("Crust: " + pizza.getCrust());
+            System.out.println("Sauce: " + pizza.getSauce());
+            
+            List<String> toppings = pizza.getToppings();
+            if (!toppings.isEmpty()) {
+                System.out.println("Toppings: " + String.join(", ", toppings));
+            }
+            
+            if (pizza.hasExtraCheese()) {
+                System.out.println("Extra Cheese: Yes");
+            }
+            
+            System.out.println("Price: " + pizza.getPrice() + " LKR");
+            total += pizza.getPrice();
+        }
+        
+        System.out.println("\n-------------------");
+        System.out.println("Delivery: " + (order.isDelivery() ? "Yes" : "No"));
+        if (order.isDelivery()) {
+            total += 200;
+            System.out.println("Delivery Charge: 200 LKR");
+        }
+        
+        System.out.println("\n-------------------");
+        System.out.println("Total Amount: " + total + " LKR");
+    }
+
     private static void displayCustomers() {
-    Map<String, Customer> customers = admin.getCustomers();
-    
-    if (customers.isEmpty()) {
-        System.out.println("\nNo customers registered yet!");
-        return;
+        Map<String, Customer> customers = admin.getCustomers();
+        
+        if (customers.isEmpty()) {
+            System.out.println("\nNo customers registered yet!");
+            return;
+        }
+        System.out.println("\n=== Customer List ===");
+        // Print table header
+        System.out.println("+" + "-".repeat(20) + "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(10) + "+" + "-".repeat(30) + "+");
+        System.out.printf("| %-18s | %-13s | %-23s | %-8s | %-28s |\n", 
+            "Name", "Mobile", "Email", "Points", "Favorite Pizzas");
+        System.out.println("+" + "-".repeat(20) + "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(10) + "+" + "-".repeat(30) + "+");
+        
+        // Print each customer's details
+        for (Map.Entry<String, Customer> entry : customers.entrySet()) {
+            Customer customer = entry.getValue();
+
+            List<Pizza> savedPizzas = customer.getSavedPizzas();
+            String favoritePizzas = savedPizzas.isEmpty() ? "None" : 
+                savedPizzas.stream()
+                          .map(Pizza::getSpecialName)
+                          .limit(2)
+                          .filter(name -> name != null && !name.isEmpty())
+                          .collect(Collectors.joining(", ")) + 
+                (savedPizzas.size() > 2 ? ", ..." : "");
+            
+            System.out.printf("| %-18s | %-13s | %-23s | %-8d | %-28s |\n",
+                customer.getName(),
+                entry.getKey(),
+                customer.getEmail(),
+                customer.getLoyaltyPoints(),
+                favoritePizzas
+            );
+        }
+        
+        // Print table footer
+        System.out.println("+" + "-".repeat(20) + "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(10) + "+" + "-".repeat(30) + "+");
     }
 
-    System.out.println("\n=== Customer List ===");
-    // Print table header
-    System.out.println("+" + "-".repeat(20) + "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(10) + "+");
-    System.out.printf("| %-18s | %-13s | %-23s | %-8s |\n", "Name", "Mobile", "Email", "Points");
-    System.out.println("+" + "-".repeat(20) + "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(10) + "+");
-
-    // Print each customer's details
-    for (Map.Entry<String, Customer> entry : customers.entrySet()) {
-        Customer customer = entry.getValue();
-        System.out.printf("| %-18s | %-13s | %-23s | %-8d |\n",
-            customer.getName(),
-            entry.getKey(),
-            customer.getEmail(),
-            customer.getLoyaltyPoints()
-        );
-    }
-    
-    // Print table footer
-        System.out.println("+" + "-".repeat(20) + "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(10) + "+");
+    private static void displayOrders() {
+        if (activeOrders.isEmpty()) {
+            System.out.println("\nNo active orders!");
+            return;
+        }
+        
+        System.out.println("\n=== Active Orders ===");
+        // Increased column widths, especially for Status
+        System.out.println("+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(15) + "+" + "-".repeat(35) + "+");
+        System.out.printf("| %-13s | %-23s | %-13s | %-33s |\n",
+            "Order ID", "Customer Name", "Mobile", "Status");
+        System.out.println("+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(15) + "+" + "-".repeat(35) + "+");
+        
+        // Print each order's details
+        for (Map.Entry<String, Order> entry : activeOrders.entrySet()) {
+            Order order = entry.getValue();
+            Customer customer = order.getCustomer();
+            
+            System.out.printf("| %-13s | %-23s | %-13s | %-33s |\n",
+                order.getOrderId(),
+                customer.getName(),
+                customer.getMobileNumber(),
+                order.getCurrentState().getStatusMessage()
+            );
+        }
+        // Print table footer
+        System.out.println("+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(15) + "+" + "-".repeat(35) + "+");
     }
 }

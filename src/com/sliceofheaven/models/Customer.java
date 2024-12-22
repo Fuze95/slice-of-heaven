@@ -45,4 +45,8 @@ public class Customer implements OrderObserver {
     public List<Pizza> getSavedPizzas() {
         return savedPizzas;
     }
+
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
 }

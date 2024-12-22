@@ -40,6 +40,9 @@ public class Pizza {
     public String getCrust() { return crustType; }
     public String getSauce() { return sauce; }
     public String getSpecialName() { return specialName; }
+    public List<String> getToppings() { return new ArrayList<>(toppings); }
+    public boolean hasExtraCheese() { return extraCheese; }
+
 
     // Setter for special name
     public void setSpecialName(String specialName) {
