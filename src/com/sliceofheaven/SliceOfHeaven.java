@@ -469,8 +469,8 @@ public class SliceOfHeaven {
             {"John Doe", "john@email.com", "0779879948", "Bandarawela"},
             {"Jane Smith", "jane@email.com", "0719879948", "Badulla"},
             {"Mike Wilson", "mike@email.com", "0779879947", "Diyatalawa"},
-            {"Sarah Brown", "sarah@email.com", "0779879944", "Welimada"},
-            {"Tom Garcia", "tom@email.com", "0779879949", "Ella"}
+            {"Jason Brown", "sarah@email.com", "0779879944", "Welimada"},
+            {"Lusia Garcia", "tom@email.com", "0779879949", "Ella"}
         };
 
         for (String[] customer : dummyData) {
