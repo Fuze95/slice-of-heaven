@@ -13,13 +13,13 @@ public class Admin {
     private final String adminPassword = "admin123";
 
     private Admin() {
-        towns = new ArrayList<>(Arrays.asList("Bandarawela", "Badulla", "Diyatalawa"));
+        towns = new ArrayList<>(Arrays.asList("Bandarawela", "Diyatalawa", "Ella"));
         customers = new HashMap<>();
 
         deliveryFees = new HashMap<>();
-        deliveryFees.put("Bandarawela", 200.0);
-        deliveryFees.put("Badulla", 450.0);
-        deliveryFees.put("Diyatalawa", 250.0);
+        deliveryFees.put("Bandarawela", 150.0);
+        deliveryFees.put("Diyatalawa", 200.0);
+        deliveryFees.put("Ella", 250.0);
     }
 
     public static Admin getInstance() {

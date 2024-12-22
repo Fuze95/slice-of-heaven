@@ -466,11 +466,11 @@ public class SliceOfHeaven {
     private static void addDummyCustomers() {
         // Dummy customer data
         String[][] dummyData = {
-            {"John Doe", "john@email.com", "0779879948", "123 Main St"},
-            {"Jane Smith", "jane@email.com", "0719879948", "456 Oak Ave"},
-            {"Mike Wilson", "mike@email.com", "0779879947", "789 Pine Rd"},
-            {"Sarah Brown", "sarah@email.com", "0779879944", "321 Elm St"},
-            {"Tom Garcia", "tom@email.com", "0779879949", "654 Cedar Ln"}
+            {"John Doe", "john@email.com", "0779879948", "Bandarawela"},
+            {"Jane Smith", "jane@email.com", "0719879948", "Badulla"},
+            {"Mike Wilson", "mike@email.com", "0779879947", "Diyatalawa"},
+            {"Sarah Brown", "sarah@email.com", "0779879944", "Welimada"},
+            {"Tom Garcia", "tom@email.com", "0779879949", "Ella"}
         };
 
         for (String[] customer : dummyData) {
