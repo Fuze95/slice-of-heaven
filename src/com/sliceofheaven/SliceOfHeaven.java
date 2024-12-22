@@ -81,100 +81,110 @@ public class SliceOfHeaven {
     }
 
     private static void placeOrder() {
-            System.out.println("\n=== Place Order ===");
-            System.out.print("Enter customer mobile number: ");
-            String mobile = scanner.nextLine();
-            Customer customer = admin.getCustomer(mobile);
-            if (customer == null) {
-                System.out.println("Customer not found!");
-                return;
-            }
+        System.out.println("\n=== Place Order ===");
+        System.out.print("Enter customer mobile number: ");
+        Customer customer = admin.getCustomer(scanner.nextLine());
+        if (customer == null) {
+            System.out.println("Customer not found!");
+            return;
+        }
 
-            // Check for favorite pizzas
-            List<Pizza> savedPizzas = customer.getSavedPizzas();
-            if (!savedPizzas.isEmpty()) {
-                System.out.print("Do you want to order from your favorite pizzas? [Y/N]: ");
-                if (scanner.nextLine().toLowerCase().startsWith("y")) {
-                    System.out.println("\n=== Saved Favorite Pizzas ===");
-                    for (int i = 0; i < savedPizzas.size(); i++) {
-                        Pizza pizza = savedPizzas.get(i);
-                        System.out.println((i + 1) + ". " + pizza.getSpecialName() + 
-                                         " - Size: " + pizza.getSize() + 
-                                         ", Crust: " + pizza.getCrust() +
-                                         ", Sauce: " + pizza.getSauce());
-                    }
+        Order order = null;
+        List<Pizza> savedPizzas = customer.getSavedPizzas();
+        
+        // Handle favorite pizzas
+        if (!savedPizzas.isEmpty() && promptYesNo("Do you want to order from your favorite pizzas?")) {
+            order = handleFavoritePizzas(customer, savedPizzas);
+            if (order == null) return;
+        }
+        
+        if (order == null) {
+            order = handleNormalOrder(customer);
+            if (order == null) return;
+        }
+        
+        if (!confirmAndProcessOrder(order)) {
+            System.out.println("Order cancelled!");
+        }
+    }
 
-                    Order order = new Order(customer, false);
-                    
-                    while (true) {
-                        System.out.print("\nSelect pizza number (0 to finish): ");
-                        int choice = scanner.nextInt();
-                        scanner.nextLine();
-                        
-                        if (choice == 0) {
-                            if (order.getPizzas().isEmpty()) {
-                                System.out.println("No pizzas selected!");
-                                return;
-                            }
-                            break;
-                        }
-                        
-                        if (choice > 0 && choice <= savedPizzas.size()) {
-                            order.addPizza(savedPizzas.get(choice - 1));
-                        } else {
-                            System.out.println("Invalid choice!");
-                        }
-                        
-                        System.out.print("Add another favorite pizza? [Y/N]: ");
-                        if (!scanner.nextLine().toLowerCase().startsWith("y")) {
-                            break;
-                        }
-                    }
+    private static boolean promptYesNo(String message) {
+        System.out.print(message + " [Y/N]: ");
+        return scanner.nextLine().toLowerCase().startsWith("y");
+    }
 
-                    // Ask for delivery after pizza selection
-                    System.out.println("Available towns for delivery: " + admin.getTowns());
-                    System.out.print("Is this for delivery? [Y/N]: ");
-                    boolean isDelivery = scanner.nextLine().toLowerCase().startsWith("y");
-                    order.setDelivery(isDelivery);
+    private static Order handleFavoritePizzas(Customer customer, List<Pizza> savedPizzas) {
+        System.out.println("\n=== Saved Favorite Pizzas ===");
+        for (int i = 0; i < savedPizzas.size(); i++) {
+            Pizza pizza = savedPizzas.get(i);
+            System.out.printf("%d. %s - Size: %s, Crust: %s, Sauce: %s%n", 
+                i + 1, pizza.getSpecialName(), pizza.getSize(), pizza.getCrust(), pizza.getSauce());
+        }
 
-                    displayOrderSummary(order);
-                    System.out.print("\nConfirm order? [Y/N]: ");
-                    if (!scanner.nextLine().toLowerCase().startsWith("y")) {
-                        System.out.println("Order cancelled!");
-                        return;
-                    }
-                    // Proceed to payment processing
-                    processPayment(order, customer);
-                    return;
-                }
-            }
-
-            // Normal ordering process
-            System.out.println("Available towns for delivery: " + admin.getTowns());
-            System.out.print("Is this for delivery? [Y/N]: ");
-            boolean isDelivery = scanner.nextLine().toLowerCase().startsWith("y");
-            Order order = new Order(customer, isDelivery);
+        Order order = new Order(customer, false);
+        while (true) {
+            System.out.print("\nSelect pizza number (0 to finish): ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
             
+            if (choice == 0) {
+                return order.getPizzas().isEmpty() ? null : order;
+            }
+            
+            if (choice > 0 && choice <= savedPizzas.size()) {
+                order.addPizza(savedPizzas.get(choice - 1));
+                if (!promptYesNo("Add another favorite pizza?")) break;
+            } else {
+                System.out.println("Invalid choice!");
+            }
+        }
+        
+        setupDelivery(order);
+        return order;
+    }
+
+    private static Order handleNormalOrder(Customer customer) {
+        Order order = new Order(customer, false);
+        setupDelivery(order);
+        
+        do {
+            Pizza pizza = createPizza(customer);
+            if (pizza != null) {
+                order.addPizza(pizza);
+            }
+        } while (promptYesNo("Add another pizza?"));
+        
+        return order;
+    }
+
+    private static void setupDelivery(Order order) {
+        System.out.println("Available towns for delivery: " + admin.getTowns());
+        boolean isDelivery = promptYesNo("Is this for delivery?");
+        order.setDelivery(isDelivery);
+        
+        if (isDelivery) {
             while (true) {
-                Pizza pizza = createPizza(customer);
-                if (pizza != null) {
-                    order.addPizza(pizza);
-                }
-                System.out.print("Add another pizza? [Y/N]: ");
-                if (!scanner.nextLine().toLowerCase().startsWith("y")) {
+                System.out.print("Enter delivery town: ");
+                String town = scanner.nextLine();
+                if (admin.getTowns().contains(town)) {
+                    order.setDeliveryTown(town);
+                    System.out.printf("Delivery fee for %s: LKR %.2f%n", 
+                        town, admin.getDeliveryFee(town));
                     break;
                 }
+                System.out.println("Invalid town! Please choose from available towns.");
             }
-
-            displayOrderSummary(order);
-            System.out.print("\nConfirm order? [Y/N]: ");
-            if (!scanner.nextLine().toLowerCase().startsWith("y")) {
-                System.out.println("Order cancelled!");
-                return;
-            }
-
-            processPayment(order, customer);
         }
+    }
+
+    private static boolean confirmAndProcessOrder(Order order) {
+        displayOrderSummary(order);
+        if (!promptYesNo("\nConfirm order?")) {
+            return false;
+        }
+        processPayment(order, order.getCustomer());
+        return true;
+    }
 
     private static void processPayment(Order order, Customer customer) {
         System.out.println("\nTotal Amount: " + order.getTotalAmount() + " LKR");
@@ -362,39 +372,35 @@ public class SliceOfHeaven {
 
     private static void displayOrderSummary(Order order) {
         System.out.println("\n=== Order Summary ===");
-        List<Pizza> pizzas = order.getPizzas();
-        double total = 0;
         
-        for (int i = 0; i < pizzas.size(); i++) {
-            Pizza pizza = pizzas.get(i);
-            System.out.println("\nPizza " + (i + 1) + ":");
-            System.out.println("-------------------");
-            System.out.println("Size: " + pizza.getSize());
-            System.out.println("Crust: " + pizza.getCrust());
-            System.out.println("Sauce: " + pizza.getSauce());
+        order.getPizzas().forEach(pizza -> {
+            System.out.printf("\nPizza %d:%n--------------------%n", 
+                order.getPizzas().indexOf(pizza) + 1);
+            System.out.printf("Size: %s%nCrust: %s%nSauce: %s%n", 
+                pizza.getSize(), pizza.getCrust(), pizza.getSauce());
             
-            List<String> toppings = pizza.getToppings();
-            if (!toppings.isEmpty()) {
-                System.out.println("Toppings: " + String.join(", ", toppings));
+            if (!pizza.getToppings().isEmpty()) {
+                System.out.println("Toppings: " + String.join(", ", pizza.getToppings()));
             }
-            
             if (pizza.hasExtraCheese()) {
                 System.out.println("Extra Cheese: Yes");
             }
-            
-            System.out.println("Price: " + pizza.getPrice() + " LKR");
-            total += pizza.getPrice();
-        }
-        
+            System.out.printf("Price: %.2f LKR%n", pizza.getPrice());
+        });
+
+        double total = order.getPizzas().stream().mapToDouble(Pizza::getPrice).sum();
         System.out.println("\n-------------------");
-        System.out.println("Delivery: " + (order.isDelivery() ? "Yes" : "No"));
+        System.out.printf("Delivery: %s%n", order.isDelivery() ? "Yes" : "No");
+        
         if (order.isDelivery()) {
-            total += 200;
-            System.out.println("Delivery Charge: 200 LKR");
+            String town = order.getDeliveryTown();
+            double deliveryFee = Admin.getInstance().getDeliveryFee(town);
+            System.out.printf("Delivery Location: %s%nDelivery Charge: %.2f LKR%n", 
+                town, deliveryFee);
+            total += deliveryFee;
         }
-        
-        System.out.println("\n-------------------");
-        System.out.println("Total Amount: " + total + " LKR");
+
+        System.out.printf("%n-------------------%nTotal Amount: %.2f LKR%n", total);
     }
 
     private static void displayCustomers() {

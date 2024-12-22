@@ -4,12 +4,14 @@ import com.sliceofheaven.payment.PaymentStrategy;
 import com.sliceofheaven.states.OrderState;
 import com.sliceofheaven.states.PlacedState;
 import com.sliceofheaven.states.CancelledState;
+import com.sliceofheaven.Admin;
 import java.util.*;
 
 public class Order implements OrderSubject {
     private String orderId;
     private Customer customer;
     private List<Pizza> pizzas;
+    private String deliveryTown;
     private boolean isDelivery;
     private OrderState currentState;
     private List<OrderObserver> observers;
@@ -21,6 +23,7 @@ public class Order implements OrderSubject {
         this.customer = customer;
         this.pizzas = new ArrayList<>();
         this.isDelivery = isDelivery;
+        this.deliveryTown = null;
         this.currentState = new PlacedState();
         this.observers = new ArrayList<>();
         attach(customer);
@@ -34,8 +37,9 @@ public class Order implements OrderSubject {
 
     private void calculateTotal() {
         totalAmount = pizzas.stream().mapToDouble(Pizza::getPrice).sum();
-        if (isDelivery) {
-            totalAmount += 200.0; // Delivery fee
+        if (isDelivery && deliveryTown != null) {
+            Admin admin = Admin.getInstance();
+            totalAmount += Admin.getInstance().getDeliveryFee(deliveryTown);
         }
     }
 
@@ -91,10 +95,15 @@ public class Order implements OrderSubject {
         this.isDelivery = isDelivery;
     }
 
+    public void setDeliveryTown(String town) {
+        this.deliveryTown = town;
+    }
+
     public String getOrderId() { return orderId; }
     public double getTotalAmount() { return totalAmount; }
     public OrderState getCurrentState() { return currentState; }
     public Customer getCustomer() { return customer; }
     public List<Pizza> getPizzas() { return pizzas; }
     public boolean isDelivery() { return isDelivery; }
+    public String getDeliveryTown() { return deliveryTown; }
 }
