@@ -1,5 +1,4 @@
 package com.sliceofheaven.states;
-
 import com.sliceofheaven.models.Order;
 
 public class CancelledState implements OrderState {
@@ -11,5 +10,10 @@ public class CancelledState implements OrderState {
     @Override
     public String getStatusMessage() {
         return "Order has been cancelled";
+    }
+
+    @Override
+    public OrderState previewNextState() {
+        return null;  // Final state
     }
 }
