@@ -398,42 +398,33 @@ public class SliceOfHeaven {
 
     private static void displayCustomers() {
         Map<String, Customer> customers = admin.getCustomers();
-        
         if (customers.isEmpty()) {
             System.out.println("\nNo customers registered yet!");
             return;
         }
-        System.out.println("\n=== Customer List ===");
-        // Print table header
-        System.out.println("+" + "-".repeat(20) + "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(10) + "+" + "-".repeat(30) + "+");
-        System.out.printf("| %-18s | %-13s | %-23s | %-8s | %-28s |\n", 
-            "Name", "Mobile", "Email", "Points", "Favorite Pizzas");
-        System.out.println("+" + "-".repeat(20) + "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(10) + "+" + "-".repeat(30) + "+");
-        
-        // Print each customer's details
-        for (Map.Entry<String, Customer> entry : customers.entrySet()) {
-            Customer customer = entry.getValue();
 
-            List<Pizza> savedPizzas = customer.getSavedPizzas();
-            String favoritePizzas = savedPizzas.isEmpty() ? "None" : 
-                savedPizzas.stream()
-                          .map(Pizza::getSpecialName)
-                          .limit(2)
-                          .filter(name -> name != null && !name.isEmpty())
-                          .collect(Collectors.joining(", ")) + 
-                (savedPizzas.size() > 2 ? ", ..." : "");
-            
-            System.out.printf("| %-18s | %-13s | %-23s | %-8d | %-28s |\n",
-                customer.getName(),
-                entry.getKey(),
-                customer.getEmail(),
-                customer.getLoyaltyPoints(),
-                favoritePizzas
-            );
-        }
+        String border = "+" + "-".repeat(20) + "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(10) + "+" + "-".repeat(30) + "+";
+        String format = "| %-18s | %-13s | %-23s | %-8s | %-28s |\n";
         
-        // Print table footer
-        System.out.println("+" + "-".repeat(20) + "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(10) + "+" + "-".repeat(30) + "+");
+        System.out.println("\n=== Customer List ===");
+        System.out.println(border);
+        System.out.printf(format, "Name", "Mobile", "Email", "Points", "Favorite Pizzas");
+        System.out.println(border);
+        
+        customers.forEach((mobile, customer) -> {
+            String favoritePizzas = customer.getSavedPizzas().isEmpty() ? "None" : 
+                customer.getSavedPizzas().stream()
+                    .map(Pizza::getSpecialName)
+                    .limit(2)
+                    .filter(name -> name != null && !name.isEmpty())
+                    .collect(Collectors.joining(", ")) + 
+                    (customer.getSavedPizzas().size() > 2 ? ", ..." : "");
+            
+            System.out.printf(format, customer.getName(), mobile, customer.getEmail(), 
+                customer.getLoyaltyPoints(), favoritePizzas);
+        });
+        
+        System.out.println(border);
     }
 
     private static void displayOrders() {
@@ -441,27 +432,21 @@ public class SliceOfHeaven {
             System.out.println("\nNo active orders!");
             return;
         }
+
+        String border = "+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(15) + "+" + "-".repeat(35) + "+";
+        String format = "| %-13s | %-23s | %-13s | %-33s |\n";
         
         System.out.println("\n=== Active Orders ===");
-        // Increased column widths, especially for Status
-        System.out.println("+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(15) + "+" + "-".repeat(35) + "+");
-        System.out.printf("| %-13s | %-23s | %-13s | %-33s |\n",
-            "Order ID", "Customer Name", "Mobile", "Status");
-        System.out.println("+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(15) + "+" + "-".repeat(35) + "+");
+        System.out.println(border);
+        System.out.printf(format, "Order ID", "Customer Name", "Mobile", "Status");
+        System.out.println(border);
         
-        // Print each order's details
-        for (Map.Entry<String, Order> entry : activeOrders.entrySet()) {
-            Order order = entry.getValue();
+        activeOrders.forEach((orderId, order) -> {
             Customer customer = order.getCustomer();
-            
-            System.out.printf("| %-13s | %-23s | %-13s | %-33s |\n",
-                order.getOrderId(),
-                customer.getName(),
-                customer.getMobileNumber(),
-                order.getCurrentState().getStatusMessage()
-            );
-        }
-        // Print table footer
-        System.out.println("+" + "-".repeat(15) + "+" + "-".repeat(25) + "+" + "-".repeat(15) + "+" + "-".repeat(35) + "+");
+            System.out.printf(format, order.getOrderId(), customer.getName(), 
+                customer.getMobileNumber(), order.getCurrentState().getStatusMessage());
+        });
+        
+        System.out.println(border);
     }
 }
