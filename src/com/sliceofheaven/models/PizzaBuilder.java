@@ -1,6 +1,10 @@
 package com.sliceofheaven.models;
 import java.util.*;
 
+/*
+* PizzaBuilder class implementing the Builder pattern for Pizza construction.
+* Allows fluent and flexible creation of Pizza objects with various configurations.
+*/
 public class PizzaBuilder {
     private String size;
     private String crustType;

@@ -1,8 +1,12 @@
 package com.sliceofheaven.models;
 import java.util.*;
 
-// Builder Pattern - Pizza
+/*
+* Pizza class implementing the Builder pattern for flexible pizza construction.
+* Handles pizza configuration and price calculation based on selected options.
+*/
 public class Pizza {
+    //Basic pizza attributes
     private String size;
     private String crustType;
     private List<String> toppings;
@@ -11,6 +15,11 @@ public class Pizza {
     private double price;
     private String specialName;
 
+    /*
+    * Constructor used by PizzaBuilder to create Pizza instances.
+    * Initializes all pizza attributes and calculates initial price.
+    * @param builder PizzaBuilder instance containing pizza configuration
+    */
     Pizza(PizzaBuilder builder) {
         this.size = builder.getSize();
         this.crustType = builder.getCrust();

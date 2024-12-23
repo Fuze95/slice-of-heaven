@@ -1,5 +1,6 @@
 package com.sliceofheaven.payment;
 
+//Koko payment
 public class KOKOPayment implements PaymentStrategy {
     private String phoneNumber;
     private String password;

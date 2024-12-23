@@ -1,6 +1,6 @@
 package com.sliceofheaven.payment;
 
-// Strategy Pattern - Payment
+//Strategy Pattern - Payment
 public interface PaymentStrategy {
     boolean pay(double amount);
 }
