@@ -5,6 +5,8 @@ import com.sliceofheaven.states.OrderState;
 import com.sliceofheaven.states.PlacedState;
 import com.sliceofheaven.states.CancelledState;
 import com.sliceofheaven.Admin;
+import com.sliceofheaven.observers.OrderObserver;
+import com.sliceofheaven.observers.OrderSubject;
 import java.util.*;
 
 public class Order implements OrderSubject {

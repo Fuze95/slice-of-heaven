@@ -1,6 +1,7 @@
 package com.sliceofheaven.models;
 
 import java.util.*;
+import com.sliceofheaven.observers.OrderObserver;
 
 // Customer class implementing Observer
 public class Customer implements OrderObserver {
