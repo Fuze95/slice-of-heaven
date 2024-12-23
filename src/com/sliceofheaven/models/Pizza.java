@@ -11,13 +11,13 @@ public class Pizza {
     private double price;
     private String specialName;
 
-    private Pizza(PizzaBuilder builder) {
-        this.size = builder.size;
-        this.crustType = builder.crustType;
-        this.toppings = builder.toppings;
-        this.sauce = builder.sauce;
-        this.extraCheese = builder.extraCheese;
-        this.specialName = builder.specialName;
+    Pizza(PizzaBuilder builder) {
+        this.size = builder.getSize();
+        this.crustType = builder.getCrust();
+        this.toppings = builder.getToppings();
+        this.sauce = builder.getSauce();
+        this.extraCheese = builder.hasExtraCheese();
+        this.specialName = builder.getSpecialName();
         calculatePrice();
     }
 
@@ -43,56 +43,8 @@ public class Pizza {
     public List<String> getToppings() { return new ArrayList<>(toppings); }
     public boolean hasExtraCheese() { return extraCheese; }
 
-
     // Setter for special name
     public void setSpecialName(String specialName) {
         this.specialName = specialName;
-    }
-
-    public static class PizzaBuilder {
-        private String size;
-        private String crustType;
-        private List<String> toppings;
-        private String sauce;
-        private boolean extraCheese;
-        private String specialName;
-
-        public PizzaBuilder() {
-            this.toppings = new ArrayList<>();
-        }
-
-        public PizzaBuilder setSize(String size) {
-            this.size = size;
-            return this;
-        }
-
-        public PizzaBuilder setCrust(String type) {
-            this.crustType = type;
-            return this;
-        }
-
-        public PizzaBuilder addTopping(String topping) {
-            this.toppings.add(topping);
-            return this;
-        }
-
-        public PizzaBuilder setSauce(String sauce) {
-            this.sauce = sauce;
-            return this;
-        }
-
-        public PizzaBuilder setExtraCheese(boolean extra) {
-            this.extraCheese = extra;
-            return this;
-        }
-
-        public PizzaBuilder setSpecialName(String specialName) {
-            this.specialName = specialName;
-            return this;
-        }
-
-        public Pizza build() {
-            return new Pizza(this);
-        }
     }
 }

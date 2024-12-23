@@ -244,7 +244,7 @@ public class SliceOfHeaven {
 
     private static Pizza createPizza(Customer customer) {
             System.out.println("\n=== Create Pizza ===");
-            Pizza.PizzaBuilder builder = new Pizza.PizzaBuilder();
+            PizzaBuilder builder = new PizzaBuilder();
             // Size selection
             System.out.println("Select size:");
             System.out.println("1. Personal (1000 LKR)");
