@@ -37,24 +37,12 @@ public class SliceOfHeaven {
         scanner.nextLine();
         
         switch (choice) {
-            case 1:
-                createCustomer();
-                break;
-            case 2:
-                placeOrder();
-                break;
-            case 3:
-                checkOrderStatus();
-                break;
-            case 4:
-                cancelOrder();
-                break;
-            case 5:
-                displayCustomers();
-                break;
-            case 6:
-                displayOrders();         
-                break;
+            case 1:createCustomer();break;
+            case 2:placeOrder();break;
+            case 3:checkOrderStatus();break;
+            case 4:cancelOrder();break;
+            case 5:displayCustomers();break;
+            case 6:displayOrders();break;
             case 7:                     
                 System.out.println("Thank you for using Slice of Heaven!");
                 return;
@@ -105,11 +93,6 @@ public class SliceOfHeaven {
         if (!confirmAndProcessOrder(order)) {
             System.out.println("Order cancelled!");
         }
-    }
-
-    private static boolean promptYesNo(String message) {
-        System.out.print(message + " [Y/N]: ");
-        return scanner.nextLine().toLowerCase().startsWith("y");
     }
 
     private static Order handleFavoritePizzas(Customer customer, List<Pizza> savedPizzas) {
@@ -459,5 +442,10 @@ public class SliceOfHeaven {
         });
         
         System.out.println(border);
+    }
+
+    private static boolean promptYesNo(String message) {
+        System.out.print(message + " [Y/N]: ");
+        return scanner.nextLine().toLowerCase().startsWith("y");
     }
 }
