@@ -1,4 +1,4 @@
-# Slice Of Heaven - Pizza Ordering System
+# Slice of Heaven - Pizza Ordering System
 
 A Java-based pizza ordering system that implements multiple design patterns including Singleton, Observer, State, and Builder patterns. This system allows customers to create custom pizzas or choose from saved favorites, with flexible payment options (Card, PayPal, or KOKO) and real-time order tracking. The application features a comprehensive order management system that handles the entire process from pizza customization (size, crust, toppings) to delivery status updates. Customers can earn loyalty points, save their favorite pizzas, and receive SMS notifications about their order status. The system supports both takeaway and delivery options across different towns.
 
