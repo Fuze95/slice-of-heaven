@@ -1,5 +1,6 @@
 package com.sliceofheaven.payment;
 
+//Paypal payment
 public class PayPalPayment implements PaymentStrategy {
     private String email;
     private String password;

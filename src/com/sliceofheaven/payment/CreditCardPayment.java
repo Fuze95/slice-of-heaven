@@ -1,5 +1,6 @@
 package com.sliceofheaven.payment;
 
+//Card Payments
 public class CreditCardPayment implements PaymentStrategy {
     private String cardNumber;
     private String cvv;

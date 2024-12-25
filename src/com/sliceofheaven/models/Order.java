@@ -9,6 +9,11 @@ import com.sliceofheaven.observers.OrderObserver;
 import com.sliceofheaven.observers.OrderSubject;
 import java.util.*;
 
+/*
+* Order class that implements the Observer and State patterns.
+* Manages order information, state transitions, and payment processing.
+* Also handles customer notifications through the Observer pattern.
+*/
 public class Order implements OrderSubject {
     private String orderId;
     private Customer customer;
@@ -45,6 +50,10 @@ public class Order implements OrderSubject {
         }
     }
 
+    /*
+    * Sets the payment strategy to use.
+    * @param strategy PaymentStrategy implementation
+    */
     public void setPaymentStrategy(PaymentStrategy strategy) {
         this.paymentStrategy = strategy;
     }
@@ -53,7 +62,7 @@ public class Order implements OrderSubject {
         if (paymentStrategy == null) {
             return false;
         }
-        
+        //Award loyalty points for orders over 1000
         boolean paymentSuccess = paymentStrategy.pay(totalAmount);
         if (paymentSuccess && totalAmount >= 1000) {
             int points = (int) (totalAmount / 1000.0 * 10);
@@ -62,11 +71,13 @@ public class Order implements OrderSubject {
         return paymentSuccess;
     }
 
+    //Advances order to next state and notifies observers
     public void nextState() {
         currentState.handle(this);
         notifyObservers(currentState.getStatusMessage());
     }
 
+    //Sets order to a specific state
     public void setState(OrderState state) {
         this.currentState = state;
     }
@@ -76,6 +87,7 @@ public class Order implements OrderSubject {
         notifyObservers("Your order has been cancelled");
     }
 
+    //Observer pattern implementation methods
     @Override
     public void attach(OrderObserver observer) {
         observers.add(observer);

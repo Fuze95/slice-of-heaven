@@ -3,7 +3,10 @@ package com.sliceofheaven;
 import com.sliceofheaven.models.Customer;
 import java.util.*;
 
-// Singleton Pattern - Admin
+/*
+ * Admin class implementing the Singleton pattern to manage customer and delivery information.
+ * This ensures only one instance of Admin exists throughout the application lifecycle.
+ */
 public class Admin {
     private static Admin instance;
     private List<String> towns;
@@ -16,12 +19,18 @@ public class Admin {
         towns = new ArrayList<>(Arrays.asList("Bandarawela", "Diyatalawa", "Ella"));
         customers = new HashMap<>();
 
+        //Initialize and set default delivery fees for each town
         deliveryFees = new HashMap<>();
         deliveryFees.put("Bandarawela", 150.0);
         deliveryFees.put("Diyatalawa", 200.0);
         deliveryFees.put("Ella", 250.0);
     }
 
+    /*
+     * Gets the singleton instance of Admin class.
+     * Creates new instance if none exists.
+     * return The single instance of Admin
+     */
     public static Admin getInstance() {
         if (instance == null) {
             instance = new Admin();
@@ -50,6 +59,7 @@ public class Admin {
         return customers;
     }
 
+    //Return delivery fee for the town, returns 1000 if town not found
     public double getDeliveryFee(String town) {
         return deliveryFees.getOrDefault(town, 1000.0);
     }

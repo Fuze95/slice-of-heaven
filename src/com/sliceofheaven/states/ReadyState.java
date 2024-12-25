@@ -1,6 +1,7 @@
 package com.sliceofheaven.states;
 import com.sliceofheaven.models.Order;
 
+//Represents the ready state of an order after cooking is complete
 public class ReadyState implements OrderState {
     @Override
     public void handle(Order order) {

@@ -1,11 +1,16 @@
 package com.sliceofheaven;
 
+//Import necessary model classes, payment processing, and state management
 import com.sliceofheaven.models.*;
 import com.sliceofheaven.payment.*;
 import com.sliceofheaven.states.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/*
+ * Main class for the Slice of Heaven Pizza Ordering System
+ * Handles user interactions and system operations
+ */
 public class SliceOfHeaven {
     private static Scanner scanner = new Scanner(System.in);
     private static Admin admin = Admin.getInstance();
@@ -37,24 +42,12 @@ public class SliceOfHeaven {
         scanner.nextLine();
         
         switch (choice) {
-            case 1:
-                createCustomer();
-                break;
-            case 2:
-                placeOrder();
-                break;
-            case 3:
-                checkOrderStatus();
-                break;
-            case 4:
-                cancelOrder();
-                break;
-            case 5:
-                displayCustomers();
-                break;
-            case 6:
-                displayOrders();         
-                break;
+            case 1:createCustomer();break;
+            case 2:placeOrder();break;
+            case 3:checkOrderStatus();break;
+            case 4:cancelOrder();break;
+            case 5:displayCustomers();break;
+            case 6:displayOrders();break;
             case 7:                     
                 System.out.println("Thank you for using Slice of Heaven!");
                 return;
@@ -107,11 +100,7 @@ public class SliceOfHeaven {
         }
     }
 
-    private static boolean promptYesNo(String message) {
-        System.out.print(message + " [Y/N]: ");
-        return scanner.nextLine().toLowerCase().startsWith("y");
-    }
-
+    //For customers who have a favorite pizza
     private static Order handleFavoritePizzas(Customer customer, List<Pizza> savedPizzas) {
         System.out.println("\n=== Saved Favorite Pizzas ===");
         for (int i = 0; i < savedPizzas.size(); i++) {
@@ -142,6 +131,7 @@ public class SliceOfHeaven {
         return order;
     }
 
+    //For customers who don't have a favorite pizza
     private static Order handleNormalOrder(Customer customer) {
         Order order = new Order(customer, false);
         setupDelivery(order);
@@ -156,6 +146,7 @@ public class SliceOfHeaven {
         return order;
     }
 
+    //Handle delivery
     private static void setupDelivery(Order order) {
         System.out.println("Available towns for delivery: " + admin.getTowns());
         boolean isDelivery = promptYesNo("Is this for delivery?");
@@ -335,6 +326,7 @@ public class SliceOfHeaven {
             return pizza;
     }
 
+    //Update order status
     private static void checkOrderStatus() {
         System.out.print("\nEnter order ID: ");
         String orderId = scanner.nextLine();
@@ -374,6 +366,7 @@ public class SliceOfHeaven {
         }
     }
 
+    //Show order summary before the payment
     private static void displayOrderSummary(Order order) {
         System.out.println("\n=== Order Summary ===");
         
@@ -459,5 +452,10 @@ public class SliceOfHeaven {
         });
         
         System.out.println(border);
+    }
+
+    private static boolean promptYesNo(String message) {
+        System.out.print(message + " [Y/N]: ");
+        return scanner.nextLine().toLowerCase().startsWith("y");
     }
 }
